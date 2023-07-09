@@ -12,6 +12,7 @@ import { Modal } from "@/components/ui/modal"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { redirect } from "next/dist/server/api-utils"
 
 const formSchema = z.object({
     name: z.string().min(1),
@@ -35,7 +36,8 @@ export const StoreModal = () => {
 
             const response = await axios.post("/api/stores", values)
 
-            toast.success("Store created.")
+            // Use window.location.assign instead of the router for full refresh
+            window.location.assign(`/${response.data.id}`)
         } catch (error) {
             toast.error("Something went wrong.")
             console.log(error)
