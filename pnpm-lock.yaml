@@ -61,6 +61,9 @@ dependencies:
   next:
     specifier: 13.4.9
     version: 13.4.9(react-dom@18.2.0)(react@18.2.0)
+  next-cloudinary:
+    specifier: ^4.13.1
+    version: 4.13.1(next@13.4.9)(react@18.2.0)
   postcss:
     specifier: 8.4.25
     version: 8.4.25
@@ -195,6 +198,29 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       csstype: 3.1.1
+    dev: false
+
+  /@cloudinary-util/url-loader@3.8.2:
+    resolution: {integrity: sha512-f/U2be4EfYb58fN1U8W4DqXvwB3XftfKQqaAvp3NBz6G/Y4rYDVNP9ac4vvcD4+mR/6N4NDtqAE7lRoCODnycg==}
+    dependencies:
+      '@cloudinary-util/util': 2.1.0
+      '@cloudinary/url-gen': 1.10.1
+    dev: false
+
+  /@cloudinary-util/util@2.1.0:
+    resolution: {integrity: sha512-PGjVxyhhOP8IaD6uawXzfDnI8ArPqpiLfIXc8TEjhv3CGhDFBAM3dCT3xeAgg+92sQsx/AN74j+qckdWPfoO6w==}
+    dev: false
+
+  /@cloudinary/transformation-builder-sdk@1.2.9:
+    resolution: {integrity: sha512-qbLAfKhX4hy5tFPv4erpxdBT9x0GZgzDuMeDBIygqutNJTeB7lNuEZedf8X++0ZinkDccrJwXzDJty60MEfyHw==}
+    dependencies:
+      '@cloudinary/url-gen': 1.10.1
+    dev: false
+
+  /@cloudinary/url-gen@1.10.1:
+    resolution: {integrity: sha512-6pBmapnL7G231NbNWhKbi+08HcpNASci7M3OmZWaUCQWUfdmo3au27HT3Zqg9NMsisfyer3t7o0RXzPQ4XlmMg==}
+    dependencies:
+      '@cloudinary/transformation-builder-sdk': 1.2.9
     dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.44.0):
@@ -2933,6 +2959,19 @@ packages:
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+    dev: false
+
+  /next-cloudinary@4.13.1(next@13.4.9)(react@18.2.0):
+    resolution: {integrity: sha512-EHsNldknsEGBugzXAARXEPadtm8GBZzPyzPof5/Kyzl5aIThoZ9SY7a+iAbSaGev89K20GVvIi7+ou194KXy4Q==}
+    peerDependencies:
+      next: ^12 || ^13
+      react: ^17 || ^18
+    dependencies:
+      '@cloudinary-util/url-loader': 3.8.2
+      '@cloudinary-util/util': 2.1.0
+      '@cloudinary/url-gen': 1.10.1
+      next: 13.4.9(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
     dev: false
 
   /next@13.4.9(react-dom@18.2.0)(react@18.2.0):
