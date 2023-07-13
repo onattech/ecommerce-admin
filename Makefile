@@ -31,3 +31,29 @@ reset:  ## 🧨 Resets the database
 	else \
 		echo "Database reset aborted."; \
 	fi
+
+.PHONY: encrypt-env
+encrypt-env: ## 🔒 Encrypts the .env file
+	@stty -echo; \
+	read -p "Enter passphrase: " passphrase && echo; \
+	stty echo; \
+	openssl enc -aes-256-cbc -salt -in .env -out .env.enc -pass pass:$$passphrase -pbkdf2
+	@echo "🔒 .env encrypted and saved to .env.enc"
+
+.PHONY: decrypt-env
+decrypt-env: ## 🔐 Decrypts the .env.enc file
+	@echo "This will overwrite the .env file. Are you sure?[y/N]"
+	@read -p "" confirm; \
+	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
+		stty -echo; \
+		read -p "Enter passphrase: " passphrase && echo; \
+		stty echo; \
+		if openssl enc -aes-256-cbc -d -in .env.enc -out .env -pass pass:$$passphrase -pbkdf2; then \
+			echo "🔐 .env.enc successfully decrypted and saved to .env"; \
+		else \
+			echo "⛔️ Decryption failed. Please check the passphrase and try again."; \
+			rm -f .env; \
+		fi; \
+	else \
+		echo "Database reset aborted."; \
+	fi
