@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect } from "react"
+import { useParams } from "next/navigation"
 
 import { useStoreModal } from "@/hooks/use-store-modal"
 
-export default function SetupPage() {
+const SetupPage = () => {
     const onOpen = useStoreModal((state) => state.onOpen)
     const isOpen = useStoreModal((state) => state.isOpen)
 
@@ -16,3 +17,5 @@ export default function SetupPage() {
 
     return null
 }
+
+export default SetupPage

@@ -1,5 +1,3 @@
-import { Description } from "@radix-ui/react-dialog"
-
 interface HeadingProps {
     title: string
     description: string

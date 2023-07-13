@@ -1,4 +1,5 @@
 import prismadb from "@/lib/prismadb"
+
 import { CategoryForm } from "./components/category-form"
 
 const CategoryPage = async ({ params }: { params: { categoryId: string; storeId: string } }) => {

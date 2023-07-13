@@ -1,5 +1,3 @@
-"use client"
-
 import { Copy, Server } from "lucide-react"
 import { toast } from "react-hot-toast"
 
@@ -24,25 +22,23 @@ const variantMap: Record<ApiAlertProps["variant"], BadgeProps["variant"]> = {
 }
 
 export const ApiAlert: React.FC<ApiAlertProps> = ({ title, description, variant = "public" }) => {
-    const onCopy = () => {
+    const onCopy = (description: string) => {
         navigator.clipboard.writeText(description)
-        toast.success("API Route copied to the clipboard.")
+        toast.success("API Route copied to clipboard.")
     }
 
     return (
         <Alert>
             <Server className="h-4 w-4" />
-            <AlertTitle className="flex item-center gap-x-2 ml-6">
+            <AlertTitle className="flex items-center gap-x-2">
                 {title}
-                <Badge variant={variantMap[variant]} className="mt-[-2px]">
-                    {textMap[variant]}
-                </Badge>
+                <Badge variant={variantMap[variant]}>{textMap[variant]}</Badge>
             </AlertTitle>
-            <AlertDescription className="mt-4 flex items-center justify-between ml-6">
+            <AlertDescription className="mt-4 flex items-center justify-between">
                 <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
                     {description}
                 </code>
-                <Button variant="outline" size="icon" onClick={onCopy}>
+                <Button variant="outline" size="sm" onClick={() => onCopy(description)}>
                     <Copy className="h-4 w-4" />
                 </Button>
             </AlertDescription>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+
 import { Modal } from "@/components/ui/modal"
 import { Button } from "@/components/ui/button"
 
@@ -29,7 +30,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, onConfi
                     Cancel
                 </Button>
                 <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-                    Contine
+                    Continue
                 </Button>
             </div>
         </Modal>

@@ -1,6 +1,7 @@
+import { NextResponse } from "next/server"
+
 import prismadb from "@/lib/prismadb"
 import { auth } from "@clerk/nextjs"
-import { NextResponse } from "next/server"
 
 export async function GET(req: Request, { params }: { params: { sizeId: string } }) {
     try {
@@ -21,65 +22,12 @@ export async function GET(req: Request, { params }: { params: { sizeId: string }
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { storeId: string; sizeId: string } }) {
-    try {
-        const { userId } = auth()
-        const body = await req.json()
-
-        const { name, value } = body
-
-        if (!userId) {
-            return new NextResponse("Unauthenticated", { status: 401 })
-        }
-
-        if (!name) {
-            return new NextResponse("Name is required", { status: 400 })
-        }
-
-        if (!value) {
-            return new NextResponse("Value is required", { status: 400 })
-        }
-
-        if (!params.sizeId) {
-            return new NextResponse("Billboard id is required", { status: 400 })
-        }
-
-        const storeByUserId = await prismadb.store.findFirst({
-            where: {
-                id: params.storeId,
-                userId,
-            },
-        })
-
-        // This check is to prevent an authenticated user from updating a billboard
-        // that doesn't belong to him.
-        if (!storeByUserId) {
-            return new NextResponse("Unauthorized", { status: 403 })
-        }
-
-        const size = await prismadb.size.updateMany({
-            where: {
-                id: params.sizeId,
-            },
-            data: {
-                name,
-                value,
-            },
-        })
-
-        return NextResponse.json(size)
-    } catch (error) {
-        console.log("[SIZE_PATCH]", error)
-        return new NextResponse("Internal error", { status: 500 })
-    }
-}
-
-export async function DELETE(req: Request, { params }: { params: { storeId: string; sizeId: string } }) {
+export async function DELETE(req: Request, { params }: { params: { sizeId: string; storeId: string } }) {
     try {
         const { userId } = auth()
 
         if (!userId) {
-            return new NextResponse("Unauthenticated", { status: 401 })
+            return new NextResponse("Unauthenticated", { status: 403 })
         }
 
         if (!params.sizeId) {
@@ -93,13 +41,11 @@ export async function DELETE(req: Request, { params }: { params: { storeId: stri
             },
         })
 
-        // This check is to prevent an authenticated user from updating a size
-        // that doesn't belong to him.
         if (!storeByUserId) {
-            return new NextResponse("Unauthorized", { status: 403 })
+            return new NextResponse("Unauthorized", { status: 405 })
         }
 
-        const size = await prismadb.size.deleteMany({
+        const size = await prismadb.size.delete({
             where: {
                 id: params.sizeId,
             },
@@ -108,6 +54,58 @@ export async function DELETE(req: Request, { params }: { params: { storeId: stri
         return NextResponse.json(size)
     } catch (error) {
         console.log("[SIZE_DELETE]", error)
+        return new NextResponse("Internal error", { status: 500 })
+    }
+}
+
+export async function PATCH(req: Request, { params }: { params: { sizeId: string; storeId: string } }) {
+    try {
+        const { userId } = auth()
+
+        const body = await req.json()
+
+        const { name, value } = body
+
+        if (!userId) {
+            return new NextResponse("Unauthenticated", { status: 403 })
+        }
+
+        if (!name) {
+            return new NextResponse("Name is required", { status: 400 })
+        }
+
+        if (!value) {
+            return new NextResponse("Value is required", { status: 400 })
+        }
+
+        if (!params.sizeId) {
+            return new NextResponse("Size id is required", { status: 400 })
+        }
+
+        const storeByUserId = await prismadb.store.findFirst({
+            where: {
+                id: params.storeId,
+                userId,
+            },
+        })
+
+        if (!storeByUserId) {
+            return new NextResponse("Unauthorized", { status: 405 })
+        }
+
+        const size = await prismadb.size.update({
+            where: {
+                id: params.sizeId,
+            },
+            data: {
+                name,
+                value,
+            },
+        })
+
+        return NextResponse.json(size)
+    } catch (error) {
+        console.log("[SIZE_PATCH]", error)
         return new NextResponse("Internal error", { status: 500 })
     }
 }

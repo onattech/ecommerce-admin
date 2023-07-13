@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export const useOrigin = () => {
     const [mounted, setMounted] = useState(false)
@@ -8,8 +8,6 @@ export const useOrigin = () => {
         setMounted(true)
     }, [])
 
-    // This is used to avoid hydration error when ran on server side
-    // In another words, checks to see if being ran on server side
     if (!mounted) {
         return ""
     }

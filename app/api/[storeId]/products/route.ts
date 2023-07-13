@@ -6,40 +6,41 @@ import prismadb from "@/lib/prismadb"
 export async function POST(req: Request, { params }: { params: { storeId: string } }) {
     try {
         const { userId } = auth()
+
         const body = await req.json()
 
         const { name, price, categoryId, colorId, sizeId, images, isFeatured, isArchived } = body
 
         if (!userId) {
-            return new NextResponse("Unauthenticated", { status: 401 })
+            return new NextResponse("Unauthenticated", { status: 403 })
         }
 
         if (!name) {
-            return new Response("Name is required", { status: 400 })
+            return new NextResponse("Name is required", { status: 400 })
         }
 
         if (!images || !images.length) {
-            return new Response("Images are required", { status: 400 })
+            return new NextResponse("Images are required", { status: 400 })
         }
 
         if (!price) {
-            return new Response("Price is required", { status: 400 })
+            return new NextResponse("Price is required", { status: 400 })
         }
 
         if (!categoryId) {
-            return new Response("Category id is required", { status: 400 })
+            return new NextResponse("Category id is required", { status: 400 })
         }
 
         if (!colorId) {
-            return new Response("Color id is required", { status: 400 })
+            return new NextResponse("Color id is required", { status: 400 })
         }
 
         if (!sizeId) {
-            return new Response("Size id is required", { status: 400 })
+            return new NextResponse("Size id is required", { status: 400 })
         }
 
         if (!params.storeId) {
-            return new Response("Store id is required", { status: 400 })
+            return new NextResponse("Store id is required", { status: 400 })
         }
 
         const storeByUserId = await prismadb.store.findFirst({
@@ -50,7 +51,7 @@ export async function POST(req: Request, { params }: { params: { storeId: string
         })
 
         if (!storeByUserId) {
-            return new NextResponse("Unauthorized", { status: 403 })
+            return new NextResponse("Unauthorized", { status: 405 })
         }
 
         const product = await prismadb.product.create({
@@ -87,7 +88,7 @@ export async function GET(req: Request, { params }: { params: { storeId: string 
         const isFeatured = searchParams.get("isFeatured")
 
         if (!params.storeId) {
-            return new Response("Store id is required", { status: 400 })
+            return new NextResponse("Store id is required", { status: 400 })
         }
 
         const products = await prismadb.product.findMany({
