@@ -17,7 +17,7 @@ generate: ## 🧩 Generates prisma files
 	$(NPX) prisma generate
 
 .PHONY: db-push
-db-push: ## 📤 Pushes genrated prisma files to database
+db-push: ## 📤 Pushes generated prisma files to database
 	@echo "📤 Pushing to database"
 	$(NPX) prisma db push
 
