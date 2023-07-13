@@ -21,13 +21,17 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ disabled, onChange, onRemove,
         setIsMounted(true)
     }, [])
 
-    const onUpload = (result: any) => {
+    const onUpload = (result: { info: { secure_url: string } }) => {
         onChange(result.info.secure_url)
     }
 
+    // This is used to avoid hydration error when ran on server side
+    // In another words, checks to see if being ran on server side
     if (!isMounted) {
         return null
     }
+
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 
     return (
         <div>
@@ -43,7 +47,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ disabled, onChange, onRemove,
                     </div>
                 ))}
             </div>
-            <CldUploadWidget onUpload={onUpload} uploadPreset="ibnnza0a">
+            <CldUploadWidget onUpload={onUpload} uploadPreset={uploadPreset}>
                 {({ open }) => {
                     const onClick = () => {
                         open()
