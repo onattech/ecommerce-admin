@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs"
 
 import prismadb from "@/lib/prismadb"
+import { generateStore } from "@/lib/generateStore"
 
 export default async function SetupLayout({ children }: { children: React.ReactNode }) {
     const { userId } = auth()
@@ -18,6 +19,9 @@ export default async function SetupLayout({ children }: { children: React.ReactN
 
     if (store) {
         redirect(`/${store.id}`)
+    } else {
+        const storeId = generateStore(userId)
+        redirect(`/${storeId}`)
     }
 
     return <>{children}</>
