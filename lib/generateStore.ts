@@ -32,136 +32,67 @@ export async function generateStore(userId: string) {
     ]
 
     // Add billboards
-    const billresponse = await prismadb.billboard.createMany({
-        data: billboards,
-    })
-    console.log("🚀 ~ file: layout.tsx:56 ~ SetupLayout ~ billresponse:", billresponse)
-
+    await prismadb.billboard.createMany({ data: billboards })
     const featuredBillboard = await prismadb.billboard.findFirst({
         where: { label: "Explore The Featured Collection" },
     })
-    console.log("🚀 ~ file: layout.tsx:25 ~ SetupLayout ~ featuredBillboard:", featuredBillboard?.id)
-
     const glassesBillboard = await prismadb.billboard.findFirst({
         where: { label: "Explore The Glasses Collection!" },
     })
-    console.log("🚀 ~ file: layout.tsx:25 ~ SetupLayout ~ glassesBillboard:", glassesBillboard?.id)
-
     const shirtsBillboard = await prismadb.billboard.findFirst({
         where: { label: "Explore The Shirts Collection!" },
     })
-    console.log("🚀 ~ file: layout.tsx:25 ~ SetupLayout ~ shirtsBillboard:", shirtsBillboard?.id)
-
     const suitesBillboard = await prismadb.billboard.findFirst({
         where: { label: "Explore The Suits Collection!" },
     })
-    console.log("🚀 ~ file: layout.tsx:25 ~ SetupLayout ~ suitesBillboard:", suitesBillboard?.id)
 
+    // Add categories
     const categories = [
-        {
-            storeId,
-            billboardId: glassesBillboard!.id,
-            name: "Glasses",
-        },
-        {
-            storeId,
-            billboardId: shirtsBillboard!.id,
-            name: "Shirts",
-        },
-        {
-            storeId,
-            billboardId: suitesBillboard!.id,
-            name: "Suits",
-        },
+        { storeId, billboardId: glassesBillboard!.id, name: "Glasses" },
+        { storeId, billboardId: shirtsBillboard!.id, name: "Shirts" },
+        { storeId, billboardId: suitesBillboard!.id, name: "Suits" },
     ]
+    await prismadb.category.createMany({ data: categories })
 
-    const categoryResponse = await prismadb.category.createMany({
-        data: categories,
-    })
-    console.log("🚀 ~ file: layout.tsx:99 ~ SetupLayout ~ categoryResponse:", categoryResponse)
-
+    // Add sizes
     const sizes = [
-        {
-            storeId,
-            name: "Extra Large",
-            value: "xl",
-        },
-        {
-            storeId,
-            name: "Large",
-            value: "lg",
-        },
-        {
-            storeId,
-            name: "Medium",
-            value: "m",
-        },
-        {
-            storeId,
-            name: "Small",
-            value: "s",
-        },
-        {
-            storeId,
-            name: "Extra Small",
-            value: "xs",
-        },
+        { storeId, name: "Extra Large", value: "xl" },
+        { storeId, name: "Large", value: "lg" },
+        { storeId, name: "Medium", value: "m" },
+        { storeId, name: "Small", value: "s" },
+        { storeId, name: "Extra Small", value: "xs" },
     ]
+    await prismadb.size.createMany({ data: sizes })
 
-    const sizesResponse = await prismadb.size.createMany({
-        data: sizes,
-    })
-    console.log("🚀 ~ file: layout.tsx:99 ~ SetupLayout ~ categoryResponse:", sizesResponse)
-
+    // Add colors
     const colors = [
-        {
-            storeId,
-            name: "Green",
-            value: "#18A558",
-        },
-        {
-            storeId,
-            name: "Red",
-            value: "#C85250",
-        },
-        {
-            storeId,
-            name: "Black",
-            value: "#000000",
-        },
-        {
-            storeId,
-            name: "White",
-            value: "#ffffff",
-        },
-        {
-            storeId,
-            name: "Blue",
-            value: "#0074B7",
-        },
+        { storeId, name: "Green", value: "#18A558" },
+        { storeId, name: "Red", value: "#C85250" },
+        { storeId, name: "Black", value: "#000000" },
+        { storeId, name: "White", value: "#ffffff" },
+        { storeId, name: "Blue", value: "#0074B7" },
     ]
+    prismadb.color.createMany({ data: colors })
 
-    const colorsResponse = await prismadb.color.createMany({
-        data: colors,
-    })
-    console.log("🚀 ~ file: layout.tsx:99 ~ SetupLayout ~ categoryResponse:", colorsResponse)
-
-    // Products
+    // Get category ids
     const suitsCategoryId = await prismadb.category.findFirst({ where: { name: "Suits" } })
     const glassesCategoryId = await prismadb.category.findFirst({ where: { name: "Glasses" } })
     const shirtsCategoryId = await prismadb.category.findFirst({ where: { name: "Shirts" } })
 
+    // Get color ids
     const redColorId = await prismadb.color.findFirst({ where: { name: "Red" } })
     const blackColorId = await prismadb.color.findFirst({ where: { name: "Black" } })
     const blueColorId = await prismadb.color.findFirst({ where: { name: "Blue" } })
     const greenColorId = await prismadb.color.findFirst({ where: { name: "Green" } })
     const whiteColorId = await prismadb.color.findFirst({ where: { name: "White" } })
 
+    // Get size ids
     const smallSizeId = await prismadb.size.findFirst({ where: { name: "Small" } })
     const largeSizeId = await prismadb.size.findFirst({ where: { name: "Large" } })
     const xSmallSizeId = await prismadb.size.findFirst({ where: { name: "Extra Small" } })
     const mediumSizeId = await prismadb.size.findFirst({ where: { name: "Medium" } })
 
+    // Add products
     const products = [
         {
             storeId,
@@ -245,8 +176,63 @@ export async function generateStore(userId: string) {
         },
     ]
 
-    const productsResponse = await prismadb.product.createMany({ data: products })
-    console.log("🚀 ~ file: generateStore.ts:249 ~ generateStore ~ productsResponse:", productsResponse)
+    await prismadb.product.createMany({ data: products })
+
+    const allproducts = await prismadb.product.findMany({
+        where: {
+            storeId,
+        },
+    })
+    console.log("🚀 ~ file: generateStore.ts:243 ~ generateStore ~ allproducts:", allproducts)
+
+    const images = [
+        {
+            productId: allproducts.filter((a) => a.name === "Green Suit")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267200/waxw8wu6usteupwepbep.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "Black Sunglasses")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267527/icdggsc8mow74m24a9yf.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "White Shirt")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267372/qeaqidrktvafjfkusomp.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "Green Suit")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267201/ux1laychkyil7glmfbhy.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "White Sunglasses")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267462/frpjnlniksfzlays6zd1.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "Navy Blue Suit")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267308/qn2btbz8solsuhiyk6qr.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "Navy Blue Suit")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267307/k9vnhljko3po6dt79kd0.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "Brown Sunglasses")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267494/yppdt3brj14mbzhp3r8s.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "White Shirt")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267369/ovnuhwwrxiydxjkq1meq.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "Maroon")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689267265/q4gjvfecwspmmsf8qbi3.webp",
+        },
+        {
+            productId: allproducts.filter((a) => a.name === "Black Suit")[0]?.id,
+            url: "https://res.cloudinary.com/dnpnnjoif/image/upload/v1689262029/iftss9h15ni184nnb8qc.webp",
+        },
+    ]
+
+    await prismadb.image.createMany({ data: images })
 
     return storeId
 }
