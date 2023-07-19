@@ -72,7 +72,7 @@ export async function generateStore(userId: string) {
         { storeId, name: "White", value: "#ffffff" },
         { storeId, name: "Blue", value: "#0074B7" },
     ]
-    prismadb.color.createMany({ data: colors })
+    await prismadb.color.createMany({ data: colors })
 
     // Get category ids
     const suitsCategoryId = await prismadb.category.findFirst({ where: { name: "Suits" } })
